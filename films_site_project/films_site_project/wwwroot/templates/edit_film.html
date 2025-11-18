@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+{%load static%}
+
+{% block edit_film_form %}
+<form method="post" enctype="multipart/form-data" action="{% url "edit_film" film.id %}" novalidate>
+  <div class="container" style="max-width: 500px;">
+    <h3>Редактирование фильма</h3>
+    {% csrf_token %}
+    {{ form.as_div }}
+    <button type="submit" class="waves-effect waves-light amber darken-4 btn">
+      <i class="material-icons left">edit</i>Сохранить изменения
+    </button>
+  </div>
+</form>
+{% endblock edit_film_form %}

@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+{%load static%}
+
+{% block create_film_form %}
+<form method="post" enctype="multipart/form-data" action="{% url "create_film" %}">
+
+    <div class="container" style="max-width: 500px;">
+
+      <h3>Добавление фильма</h3>
+      <form method="post">
+      {% csrf_token %}
+      {{form.as_div}}
+      
+      <button type="submit" class="waves-effect waves-light amber darken-4 btn"><i class="material-icons left">open_in_new</i>Create film</button>
+      {% comment %} <button type="submit" formaction="{% url "form_page" %}" class="waves-effect waves-light amber darken-4 btn"><i class="material-icons left">open_in_new</i>Add user</button> {% endcomment %}
+    </div>
+</form>
+{% endblock create_film_form %}

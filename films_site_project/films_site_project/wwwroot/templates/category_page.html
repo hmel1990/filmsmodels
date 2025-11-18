@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+{%load static%}
+
+{% block category_page %}
+<h4>Сортировка:</h4>
+<div style="margin-bottom: 20px;">
+  <a href="?sort=name" class="btn amber darken-2">По имени ↑</a>
+  <a href="?sort=-name" class="btn amber darken-2">По имени ↓</a>
+  <a href="?sort=rating" class="btn amber darken-2">По рейтингу ↑</a>
+  <a href="?sort=-rating" class="btn amber darken-2">По рейтингу ↓</a>
+</div>
+
+
+{% for film in category_list %}
+    {% include "news_card_category.html" with category=film.category name=film.name id=film.id avatar_name=film.avatar_name%}
+  {% endfor %}
+
+{% endblock category_page %}

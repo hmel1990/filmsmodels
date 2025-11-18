@@ -1,0 +1,8 @@
+{% extends "index.html" %}
+{%load static%}
+
+{% block news_page %}
+
+{% include "news_page_card.html" with films=films rating=rating%}
+
+{% endblock news_page %}
