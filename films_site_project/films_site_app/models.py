@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 import uuid
 
@@ -20,13 +21,13 @@ class Film(models.Model):
 
     def __str__(self):
         return f"""
-FilmID:{self.id}
-Category:{self.category}
-Name:{self.name}
-Text:{self.text}
-Avatar:{self.avatar_name}
-Rating: {self.rating}
-"""
+                    FilmID:{self.id}
+                    Category:{self.category}
+                    Name:{self.name}
+                    Text:{self.text}
+                    Avatar:{self.avatar_name}
+                    Rating: {self.rating}
+                """
 
     # class Meta:
     #     db_table = 'dj_films'
@@ -36,3 +37,22 @@ Rating: {self.rating}
     #             name='name_not_blank'
     #         ),
     #     ]
+
+# class User (models.Model):
+
+class Review(models.Model):
+    film = models.ForeignKey(Film, on_delete=models.CASCADE, related_name='reviews')
+    username = models.CharField(max_length=255, editable=False)
+    text = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            # Найти первый свободный постфикс
+            existing_usernames = set(Review.objects.filter(film=self.film).values_list('username', flat=True))
+            index = 0
+            while f"testUser{index}" in existing_usernames:
+                index += 1
+            self.username = f"testUser{index}"
+        super().save(*args, **kwargs)
+    def __str__(self):
+        return f"{self.username} - {self.film.name}"

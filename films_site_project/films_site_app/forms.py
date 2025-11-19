@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import widgets
+from .models import Review
 
 
 class FilmForm(forms.Form):
@@ -17,3 +18,7 @@ class FilmForm(forms.Form):
             for field in self.fields.values():
                 field.required = False
 
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ["text"]

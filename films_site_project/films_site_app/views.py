@@ -3,14 +3,14 @@ from django.http import HttpRequest, HttpResponseNotAllowed
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.template.response import TemplateResponse
-from films_site_app.models import Film
+from films_site_app.models import Film, Review
 from django.shortcuts import get_object_or_404
 
 
 import random
 
 
-from .forms import FilmForm
+from .forms import FilmForm, ReviewForm
 
 import uuid
 import os
@@ -59,13 +59,14 @@ def seed_films():
 
 
 # seed_films()
-fims_list = Film.objects.all()
 
 def index (request):
+    fims_list = Film.objects.all()
     news_list_categories = list(set(news.category for news in fims_list))
     return TemplateResponse(request, 'main.html', {"news_list_categories":news_list_categories})
 
 def category_page (request, category):
+
     sort_by = request.GET.get('sort', 'name')
     if sort_by not in ['name', '-name', 'rating', '-rating']:
         sort_by = 'name'
@@ -85,11 +86,12 @@ def category_page (request, category):
 def news_page(request, category, id):
     film = get_object_or_404(Film, id=id, category=category)
     film.rating_int = int(film.rating)
-
+    reviews = Review.objects.filter(film = film)
     return TemplateResponse(request, 'news_page.html', {
         "films": film,
         "MEDIA_URL": settings.MEDIA_URL,
-        "rating":film.rating_int
+        "rating":film.rating_int,
+        'reviews':reviews
     })
 
 
@@ -146,5 +148,34 @@ def edit_film(request: HttpRequest, film_id):
         return render(request, "edit_film.html", {"form": form, "film": film})
 
     return render(request, "edit_film.html", {"form": FilmForm(is_editing=True), "film": film})
+
+def add_review(request: HttpRequest, film_id):
+    film = get_object_or_404(Film, id=film_id)
+    
+    if request.method == "POST":
+        reviewform = ReviewForm(request.POST)
+
+        if reviewform.is_valid():
+            Review.objects.create(
+                film=film,
+                text=reviewform.cleaned_data["text"]
+            )
+            return redirect("news_page", category=str(film.category), id=str(film.id))
+        return render(request, 'create_review.html', {"form": reviewform})
+    return render(request, 'create_review.html', {"form": ReviewForm()})
+
+
+def edit_review (request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+
+    if request.method == "POST":
+        reviewform = ReviewForm(request.POST)
+        if reviewform.is_valid():
+            review.text = reviewform.cleaned_data["text"]
+            review.save()
+            return redirect("news_page", category=str(review.film.category), id=str(review.film.id))
+        return render(request, 'edit_review.html', {"form": reviewform})
+    return render(request, 'edit_review.html', {"form": ReviewForm(), "review": review})
+
 
     
