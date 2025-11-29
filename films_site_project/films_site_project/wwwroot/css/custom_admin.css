@@ -1,0 +1,21 @@
+#header {
+    background-color: #4f2c50;   /* фон шапки */
+    color: #ecf0f1;              /* текст */
+}
+#branding h1 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #f39c12;              /* колір назви сайту */
+}
+
+#changelist table {
+    font-size: 14px;
+    border-collapse: collapse;
+}
+#changelist table th {
+    background-color: #415e34;
+    color: #fff;
+}
+#changelist table td {
+    padding: 6px 10px;
+}
