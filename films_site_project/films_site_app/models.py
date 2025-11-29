@@ -3,6 +3,19 @@ from django.utils import timezone
 
 import uuid
 
+    
+class Genre (models.Model):
+    name = models.CharField(max_length=150)
+    def __str__(self):
+        return f"{self.id} | {self.name}"
+    class Meta ():
+        permissions = [
+            ("can_moderate_genre", "Может модерировать жанр"),
+            ("can_delete_genre", "Может удалять жанр"),  
+            ("can_add_genre", "Может добавлять жанр"),  
+        ]
+
+
 class Film(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -17,6 +30,7 @@ class Film(models.Model):
         null=False,
         default=3.0,
     )
+    genre = models.ManyToManyField(null=True, to=Genre)
 
 
     def __str__(self):
@@ -56,3 +70,10 @@ class Review(models.Model):
         super().save(*args, **kwargs)
     def __str__(self):
         return f"{self.username} - {self.film.name}"
+    class Meta ():
+        permissions = [
+            ("can_moderate_reviews", "Может модерировать отзывы"),
+            ("can_delete_reviews", "Может удалять отзывы"),  
+        ]
+
+
